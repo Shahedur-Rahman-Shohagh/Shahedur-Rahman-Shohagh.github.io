@@ -26,12 +26,12 @@ export default function NetworkBackground() {
           if (p.x < 0 || p.x > W) p.vx *= -1;
           if (p.y < 0 || p.y > H) p.vy *= -1;
         }
-        x.fillStyle = 'rgba(56,217,255,.7)';
+        x.fillStyle = 'rgba(169,214,229,.7)';
         x.beginPath(); x.arc(p.x, p.y, 1.6, 0, 6.3); x.fill();
         for (let j = i + 1; j < pts.length; j++) {
           const q = pts[j], d = Math.hypot(p.x - q.x, p.y - q.y);
           if (d < 150) {
-            x.strokeStyle = `rgba(47,123,255,${0.22 * (1 - d / 150)})`;
+            x.strokeStyle = `rgba(97,165,194,${0.25 * (1 - d / 150)})`;
             x.beginPath(); x.moveTo(p.x, p.y); x.lineTo(q.x, q.y); x.stroke();
           }
         }
