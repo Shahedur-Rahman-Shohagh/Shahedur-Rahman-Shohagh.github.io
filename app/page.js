@@ -1,4 +1,6 @@
 import NetworkBackground from '../components/NetworkBackground';
+import Reveal from '../components/Reveal';
+import NetworkBackground from '../components/NetworkBackground';
 import Photo from '../components/Photo';
 import HeroWaves from '../components/HeroWaves';
 import GlowEffects from '../components/GlowEffects';
@@ -49,16 +51,27 @@ export default function Home() {
         </div>
       </header>
 
-      <main>
-        <section id="results"><div className="wrap">
-          <h2>Results so far</h2>
-          <p className="sub">Numbers from my Fiverr sales dashboard, April to September 2026.</p>
-          <div className="stats">
-            {stats.map((s) => (
-              <div className="stat" key={s.l}><b>{s.v}</b><span>{s.l}</span></div>
-            ))}
+
+<section id="results">
+  <div className="wrap">
+    <Reveal direction="up">
+      <h2>Results so far</h2>
+      <p className="sub">
+        Numbers from my Fiverr sales dashboard,
+        April to September 2026.
+      </p>
+
+      <div className="stats">
+        {stats.map((s) => (
+          <div className="stat" key={s.l}>
+            <b>{s.v}</b>
+            <span>{s.l}</span>
           </div>
-        </div></section>
+        ))}
+      </div>
+    </Reveal>
+  </div>
+</section>
 
         <section id="experience"><div className="wrap">
           <h2>Experience</h2>
