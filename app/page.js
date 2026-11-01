@@ -27,7 +27,8 @@ export default function Home() {
           <a href="#contact">Contact</a>
         </nav>
         </div>
-        <div className="wrap hero">
+        
+    <div className="wrap hero">
           <div>
             <h1>I close international deals and <em>automate</em> the work behind them.</h1>
             <p>
@@ -35,6 +36,7 @@ export default function Home() {
               Softvence Agency in Dhaka. I handle clients from around the world on Fiverr, from the first
               message to the signed order. I also build n8n AI automations and shoot and edit video content.
             </p>
+                
             <div className="btns">
               <a className="btn p big" href="#contact">Work with me</a>
               <a className="btn wa big" href={WA} target="_blank" rel="noopener noreferrer"><WaIcon />WhatsApp me</a>
@@ -49,8 +51,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-
-
 
 <section id="results">
   <div className="wrap">
@@ -76,7 +76,7 @@ export default function Home() {
 
         <section id="experience"><div className="wrap">
           <h2>Experience</h2>
-          <p className="sub">Sales, marketing, content and customer work, newest first.</p>
+          <p className="sub">Sales, marketing, content, and customer work, newest first.</p>
           <div className="tl">
             {jobs.map((j) => (
               <div className="job" key={j.t}>
@@ -102,7 +102,7 @@ export default function Home() {
 
         <section id="creative"><div className="wrap">
           <h2>Content and video</h2>
-          <p className="sub">Before sales I was already behind a camera and a script.</p>
+          <p className="sub">Before sales, I was already behind a camera and a script.</p>
           <div className="grid">
             {creative.map((c) => (
               <div className="card" key={c.t}><h3>{c.t}</h3><p>{c.d}</p></div>
@@ -136,7 +136,8 @@ export default function Home() {
             <div className="card"><h3>Clubs</h3><p>Organization Secretary, Govt. Bangla College Science Club (2022 to 2023). Member of the Recitation Club and the Bangladesh Science Fiction Society.</p></div>
             <div className="card"><h3>Outside work</h3><p>Guitar, singing, photography, cinematography, travel, movies and reading.</p></div>
           </div>
-        </div></section>
+        </div>
+        </section>
 
         <section id="contact" className="contact"><div className="wrap">
           <h2>Let&rsquo;s talk</h2>
@@ -148,7 +149,8 @@ export default function Home() {
           <a className="btn brand b-yt" href="https://www.youtube.com/@shahedurrahman4909" target="_blank" rel="noopener noreferrer"><YtIcon />YouTube</a>
           <a className="btn brand b-cv" href={`${base}/resume.pdf`}><DocIcon />Resume (PDF)</a>
           <p className="phone">WhatsApp and phone: <a href="tel:+8801875601397">+880 1875 601397</a> · Email: <a href="mailto:Shahedur6@gmail.com">Shahedur6@gmail.com</a></p>
-        </div></section>
+        </div>
+      </section>
       </main>
       <a className="wa-float" href={WA} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><WaIcon /><span>Chat on WhatsApp</span></a>
       <footer>© {new Date().getFullYear()} Md. Shahedur Rahman (Shohagh) · Dhaka, Bangladesh</footer>
