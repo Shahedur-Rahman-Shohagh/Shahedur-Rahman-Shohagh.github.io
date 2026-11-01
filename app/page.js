@@ -51,10 +51,12 @@ export default function Home() {
       </header>
 
 
+
 <section id="results">
   <div className="wrap">
     <Reveal direction="up">
       <h2>Results so far</h2>
+
       <p className="sub">
         Numbers from my Fiverr sales dashboard,
         April to September 2026.
