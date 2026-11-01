@@ -1,6 +1,5 @@
 import NetworkBackground from '../components/NetworkBackground';
 import Reveal from '../components/Reveal';
-import NetworkBackground from '../components/NetworkBackground';
 import Photo from '../components/Photo';
 import HeroWaves from '../components/HeroWaves';
 import GlowEffects from '../components/GlowEffects';
