@@ -210,3 +210,43 @@ nav a:hover::after,nav a:focus-visible::after{transform:scaleX(1);animation:flow
     transition: none;
     will-change: auto;
   }
+
+  
+/* =================================
+   PREMIUM SCROLL REVEAL ANIMATIONS
+================================= */
+
+.scroll-reveal {
+  opacity: 0;
+  transition:
+    opacity 0.45s ease-out,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-reveal.up {
+  transform: translate3d(0, 30px, 0);
+}
+
+.scroll-reveal.left {
+  transform: translate3d(-25px, 0, 0);
+}
+
+.scroll-reveal.right {
+  transform: translate3d(25px, 0, 0);
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
