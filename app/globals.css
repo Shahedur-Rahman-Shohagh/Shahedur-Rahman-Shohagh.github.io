@@ -169,84 +169,11 @@ nav a:hover::after,nav a:focus-visible::after{transform:scaleX(1);animation:flow
 @keyframes flow{to{background-position:-220% 0}}
 @media(prefers-reduced-motion:reduce){nav a:hover,nav a:hover::before,nav a:hover::after{animation:none}}
 
-/* Scroll reveal animations */
-
-.reveal {
-  opacity: 0;
-  transition:
-    opacity 0.45s ease-out,
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-
-  will-change: opacity, transform;
-}
-
-.reveal.up {
-  transform: translate3d(0, 35px, 0);
-}
-
-.reveal.left {
-  transform: translate3d(-35px, 0, 0);
-}
-
-.reveal.right {
-  transform: translate3d(35px, 0, 0);
-}
-
-.reveal.fade {
-  transform: none;
-}
-
-.reveal-visible {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-/* Accessibility */
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-    will-change: auto;
-  }
-
-  
-/* =================================
-   PREMIUM SCROLL REVEAL ANIMATIONS
-================================= */
-
-.scroll-reveal {
-  opacity: 0;
-  transition:
-    opacity 0.45s ease-out,
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.scroll-reveal.up {
-  transform: translate3d(0, 30px, 0);
-}
-
-.scroll-reveal.left {
-  transform: translate3d(-25px, 0, 0);
-}
-
-.scroll-reveal.right {
-  transform: translate3d(25px, 0, 0);
-}
-
-.scroll-reveal.is-visible {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-/* Accessibility */
-
-@media (prefers-reduced-motion: reduce) {
-  .scroll-reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
+/* ---------- performance ---------- */
+html{background:#012c4d}
+body{background:transparent}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,#013a63 0%,#012c4d 100%)}
+.waves{-webkit-mask-image:none;mask-image:none}
+.chip{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(1,44,77,.9);will-change:transform}
+.portrait{filter:drop-shadow(0 0 16px rgba(137,194,217,.32))}
+.stat,.card{backdrop-filter:none}
