@@ -94,15 +94,21 @@ const SCENES = {
 };
 const IDS = ['results', 'experience', 'services', 'creative', 'skills', 'education', 'contact'];
 
+// ===== SPEED SETTINGS (change these two numbers) =====
+const SPEED = 1.4;    // how fast the shapes animate (1 = normal, 2 = twice as fast)
+const FOLLOW = 0.14;  // how quickly dots fly into each new shape (0.05 slow ... 0.3 very fast)
+
+const BUCKETS = 12;
 export default function NetworkBackground() {
   const ref = useRef(null);
   useEffect(() => {
     const c = ref.current, x = c.getContext('2d');
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let W, H, dpr, raf, ps = [], scene = 'hero', enter = 0, link = 150;
+    const segs = Array.from({ length: BUCKETS }, () => []);
 
     const size = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       W = window.innerWidth; H = window.innerHeight;
       c.width = W * dpr; c.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0);
       const n = W < 700 ? 90 : 100;
@@ -110,8 +116,7 @@ export default function NetworkBackground() {
     };
     const pick = () => {
       const mid = window.innerHeight * 0.35;
-      const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 6;
-      if (atEnd) return 'contact';
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 6) return 'contact';
       for (const id of IDS) {
         const el = document.getElementById(id);
         if (!el) continue;
@@ -123,39 +128,55 @@ export default function NetworkBackground() {
     const onScroll = () => { const k = pick(); if (k !== scene) { scene = k; enter = performance.now() / 1000; } };
 
     const draw = (ms) => {
-      const t = ms / 1000, m = Math.min(W, H) * 0.88;
-      const cx = W < 760 ? W * 0.5 : W * 0.64, cy = H * 0.52, sc = SCENES[scene];
-      const pts = still ? [] : sc.fn(t - enter, m, cx, cy);
-      link += ((scene === 'hero' ? 150 : sc.link * m) - link) * 0.06;
+      const m = Math.min(W, H) * 0.88, cx = W < 760 ? W * 0.5 : W * 0.64, cy = H * 0.52, sc = SCENES[scene];
+      const pts = still ? [] : sc.fn((ms / 1000 - enter) * SPEED, m, cx, cy);
+      link += ((scene === 'hero' ? 150 : sc.link * m) - link) * 0.1;
+      const L2 = link * link;
       x.clearRect(0, 0, W, H);
-      ps.forEach((p, i) => {
-        const tg = pts[i];
+
+      for (let i = 0; i < ps.length; i++) {
+        const p = ps[i], tg = pts[i];
         p.on = !!tg;
-        if (tg) { p.x += (tg[0] - p.x) * 0.08; p.y += (tg[1] - p.y) * 0.08; }
+        if (tg) { p.x += (tg[0] - p.x) * FOLLOW; p.y += (tg[1] - p.y) * FOLLOW; }
         else if (!still) {
           p.x += p.vx; p.y += p.vy;
           if (p.x < 0 || p.x > W) p.vx *= -1;
           if (p.y < 0 || p.y > H) p.vy *= -1;
         }
-      });
+      }
+      // collect sticks into alpha buckets, then draw each bucket in ONE stroke
+      for (let b = 0; b < BUCKETS; b++) segs[b].length = 0;
       for (let i = 0; i < ps.length; i++) {
         const p = ps[i];
         for (let j = i + 1; j < ps.length; j++) {
-          const q = ps[j], d = Math.hypot(p.x - q.x, p.y - q.y);
-          if (d < link) {
-            const both = p.on && q.on, a = both ? 0.85 : scene === 'hero' ? 0.24 : 0.07;
-            x.strokeStyle = `rgba(169,214,229,${a * (1 - d / link)})`;
-            x.lineWidth = both ? 1.6 : 1;
-            x.beginPath(); x.moveTo(p.x, p.y); x.lineTo(q.x, q.y); x.stroke();
+          const q = ps[j], dx = p.x - q.x, dy = p.y - q.y, d2 = dx * dx + dy * dy;
+          if (d2 < L2) {
+            const lvl = Math.min(5, Math.floor((1 - Math.sqrt(d2) / link) * 6));
+            segs[(p.on && q.on ? 6 : 0) + lvl].push(p.x, p.y, q.x, q.y);
           }
         }
       }
-      ps.forEach((p) => {
-        x.fillStyle = p.on ? '#c9e8f3' : 'rgba(169,214,229,.4)';
-        x.shadowColor = p.on ? 'rgba(137,194,217,.9)' : 'transparent'; x.shadowBlur = p.on ? 8 : 0;
-        x.beginPath(); x.arc(p.x, p.y, p.on ? 3 : 1.4, 0, TAU); x.fill();
-        x.shadowBlur = 0;
-      });
+      const freeA = scene === 'hero' ? 0.24 : 0.07;
+      for (let b = 0; b < BUCKETS; b++) {
+        const a = segs[b];
+        if (!a.length) continue;
+        const both = b >= 6, lvl = b % 6;
+        x.strokeStyle = `rgba(169,214,229,${(both ? 0.85 : freeA) * ((lvl + 0.5) / 6)})`;
+        x.lineWidth = both ? 1.6 : 1;
+        x.beginPath();
+        for (let k = 0; k < a.length; k += 4) { x.moveTo(a[k], a[k + 1]); x.lineTo(a[k + 2], a[k + 3]); }
+        x.stroke();
+      }
+      // dots: three batched fills (glow, placed, free) instead of per-dot shadows
+      x.fillStyle = 'rgba(137,194,217,.18)'; x.beginPath();
+      for (const p of ps) if (p.on) { x.moveTo(p.x + 7, p.y); x.arc(p.x, p.y, 7, 0, TAU); }
+      x.fill();
+      x.fillStyle = '#c9e8f3'; x.beginPath();
+      for (const p of ps) if (p.on) { x.moveTo(p.x + 3, p.y); x.arc(p.x, p.y, 3, 0, TAU); }
+      x.fill();
+      x.fillStyle = 'rgba(169,214,229,.4)'; x.beginPath();
+      for (const p of ps) if (!p.on) { x.moveTo(p.x + 1.4, p.y); x.arc(p.x, p.y, 1.4, 0, TAU); }
+      x.fill();
       if (!still) raf = requestAnimationFrame(draw);
     };
 
