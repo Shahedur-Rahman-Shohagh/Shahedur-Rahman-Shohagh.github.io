@@ -8,6 +8,38 @@ const line = (ax, ay, bx, by, n) =>
 const ring = (cx, cy, r, n, rot = 0) =>
   Array.from({ length: n }, (_, i) => [cx + r * Math.cos(rot + (i / n) * TAU), cy + r * Math.sin(rot + (i / n) * TAU)]);
 
+const arc = (cx, cy, r, a0, a1, n) =>
+  Array.from({ length: n }, (_, i) => [cx + r * Math.cos(a0 + ((a1 - a0) * i) / (n - 1)), cy + r * Math.sin(a0 + ((a1 - a0) * i) / (n - 1))]);
+
+// A line-art handshake (unit coordinates), turned into evenly spaced points
+const HS_LINES = (() => {
+  const L = [];
+  L.push([[-0.4, -0.15], [-0.5, -0.15], [-0.5, 0.15], [-0.4, 0.15]]);                       // left cuff
+  L.push([[0.4, -0.15], [0.5, -0.15], [0.5, 0.15], [0.4, 0.15]]);                           // right cuff
+  L.push([[-0.4, -0.12], [-0.2, -0.16], [-0.05, -0.22], [0.08, -0.2], [0.2, -0.14], [0.4, -0.12]]); // forearms + thumb
+  const bottom = [[-0.4, 0.12], [-0.22, 0.14]];
+  [-0.165, -0.055, 0.055, 0.165].forEach((cx) => bottom.push(...arc(cx, 0.14, 0.055, Math.PI, 0, 7)));
+  bottom.push([0.22, 0.14], [0.4, 0.12]);
+  L.push(bottom);                                                                           // fingers
+  L.push([[-0.22, -0.16], [-0.12, -0.02], [0, 0.04], [0.12, -0.02], [0.22, -0.14]]);        // clasp
+  [-0.11, 0, 0.11].forEach((x) => L.push([[x, 0.05], [x, 0.14]]));                           // finger gaps
+  return L;
+})();
+const HS_PTS = (() => {
+  const d = 0.062, out = [];
+  for (const pl of HS_LINES) {
+    let carry = 0;
+    for (let i = 1; i < pl.length; i++) {
+      const [x0, y0] = pl[i - 1], [x1, y1] = pl[i], len = Math.hypot(x1 - x0, y1 - y0);
+      for (let t = carry; t < len; t += d) out.push([x0 + ((x1 - x0) * t) / len, y0 + ((y1 - y0) * t) / len]);
+      carry = (carry + Math.ceil((len - carry) / d) * d) - len;
+    }
+    out.push(pl[pl.length - 1]);
+  }
+  return out;
+})();
+const ORBITS = [{ a: 0.62, b: 0.2, r: 0.5 }, { a: 0.62, b: 0.2, r: -0.5 }];
+
 // Each scene returns target points (or null = "not built yet"). Unplaced points float freely.
 const SCENES = {
   hero: { link: 0.2, fn: () => [] },
@@ -38,16 +70,27 @@ const SCENES = {
     return out;
   } },
 
-  // What I do: a hub with rotating spokes and service nodes
-  services: { link: 0.095, fn: (t, m, cx, cy) => {
-    const out = ring(cx, cy, m * 0.07, 8, t * 0.4);
-    for (let i = 0; i < 6; i++) {
-      const a = t * 0.12 + (i / 6) * TAU, c = Math.cos(a), s = Math.sin(a);
-      const nx = cx + c * m * 0.4, ny = cy + s * m * 0.4;
-      out.push(...line(cx + c * m * 0.1, cy + s * m * 0.1, nx - c * m * 0.06, ny - s * m * 0.06, 4), ...ring(nx, ny, m * 0.06, 6, -t * 0.5));
-    }
-    return out;
-  } },
+  // What I do: a handshake inside an atom (deals closed, orbiting services) shown as an emblem beside the heading
+  services: { link: (m, W) => (W < 760 ? 0.7 : 0.55) * 0.062 * m * 1.5, fade: (W) => (W < 760 ? 0.5 : 1),
+    fn: (t, m, cx, cy, W, H) => {
+      const sz = m * (W < 760 ? 0.7 : 0.55), px = W < 760 ? W * 0.5 : W * 0.76, py = H * (W < 760 ? 0.11 : 0.25);
+      const g = ease(t / 2.4), bob = Math.sin(t * 1.4) * m * 0.01;
+      const out = HS_PTS.map(([x, y], i) => (i < HS_PTS.length * g ? [px + x * sz, py + y * sz + bob] : null));
+      ORBITS.forEach((o, k) => {
+        for (let i = 0; i < 10; i++) {
+          const th = (i / 10) * TAU + t * (0.7 + k * 0.2) * (k ? -1 : 1);
+          const ex = Math.cos(th) * o.a * sz, ey = Math.sin(th) * o.b * sz;
+          out.push([px + ex * Math.cos(o.r) - ey * Math.sin(o.r), py + bob + ey * Math.cos(o.r) + ex * Math.sin(o.r)]);
+        }
+      });
+      return out;
+    },
+    decor: (x, t, m, cx, cy, W, H) => {
+      const sz = m * (W < 760 ? 0.7 : 0.55), px = W < 760 ? W * 0.5 : W * 0.76, py = H * (W < 760 ? 0.11 : 0.25);
+      x.save(); x.globalAlpha *= Math.min(1, t / 1.2); x.lineWidth = 1; x.strokeStyle = 'rgba(137,194,217,.45)';
+      ORBITS.forEach((o) => { x.beginPath(); x.ellipse(px, py, o.a * sz, o.b * sz, o.r, 0, TAU); x.stroke(); });
+      x.restore();
+    } },
 
   // Content and video: a spinning reel around a play button
   creative: { link: 0.095, fn: (t, m, cx, cy) => {
@@ -58,9 +101,9 @@ const SCENES = {
     return out;
   } },
 
-  // Skills: a rotating globe of connected skills
-  skills: { link: 0.19, fn: (t, m, cx, cy) => {
-    const R = m * 0.4, n = 60, out = [];
+  // Skills: a light, rotating globe (kept faint so the text stays readable)
+  skills: { link: 0.2, fade: 0.38, fn: (t, m, cx, cy) => {
+    const R = m * 0.4, n = 46, out = [];
     for (let i = 0; i < n; i++) {
       const y = 1 - (i / (n - 1)) * 2, rad = Math.sqrt(1 - y * y), th = i * 2.399963 + t * 0.35;
       const sc = 1 / (1.6 - Math.sin(th) * rad * 0.4);
@@ -104,7 +147,7 @@ export default function NetworkBackground() {
   useEffect(() => {
     const c = ref.current, x = c.getContext('2d');
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let W, H, dpr, raf, ps = [], scene = 'hero', enter = 0, link = 150;
+    let W, H, dpr, raf, ps = [], scene = 'hero', enter = 0, link = 150, fadeNow = 1;
     const segs = Array.from({ length: BUCKETS }, () => []);
 
     const size = () => {
@@ -129,10 +172,13 @@ export default function NetworkBackground() {
 
     const draw = (ms) => {
       const m = Math.min(W, H) * 0.88, cx = W < 760 ? W * 0.5 : W * 0.64, cy = H * 0.52, sc = SCENES[scene];
-      const pts = still ? [] : sc.fn((ms / 1000 - enter) * SPEED, m, cx, cy);
-      link += ((scene === 'hero' ? 150 : sc.link * m) - link) * 0.1;
+      const pts = still ? [] : sc.fn((ms / 1000 - enter) * SPEED, m, cx, cy, W, H);
+      link += ((scene === 'hero' ? 150 : typeof sc.link === 'function' ? sc.link(m, W) : sc.link * m) - link) * 0.1;
       const L2 = link * link;
+      const fTarget = scene === 'hero' ? 1 : typeof sc.fade === 'function' ? sc.fade(W) : sc.fade ?? 0.8;
+      fadeNow += (fTarget - fadeNow) * 0.08;
       x.clearRect(0, 0, W, H);
+      x.globalAlpha = fadeNow;
 
       for (let i = 0; i < ps.length; i++) {
         const p = ps[i], tg = pts[i];
@@ -167,6 +213,7 @@ export default function NetworkBackground() {
         for (let k = 0; k < a.length; k += 4) { x.moveTo(a[k], a[k + 1]); x.lineTo(a[k + 2], a[k + 3]); }
         x.stroke();
       }
+      if (sc.decor && !still) sc.decor(x, ms / 1000 * SPEED - enter * SPEED, m, cx, cy, W, H);
       // dots: three batched fills (glow, placed, free) instead of per-dot shadows
       x.fillStyle = 'rgba(137,194,217,.18)'; x.beginPath();
       for (const p of ps) if (p.on) { x.moveTo(p.x + 7, p.y); x.arc(p.x, p.y, 7, 0, TAU); }
