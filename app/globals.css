@@ -205,3 +205,59 @@ nav a:hover,nav a:focus-visible{color:#fff;transform:translateY(-1px);animation:
 @media(max-width:760px){.o1{width:48px;height:48px}.o2{width:34px;height:34px}.o3{display:none}}
 @media(prefers-reduced-motion:reduce){.ring::before,.orb,nav a:hover{animation:none}}
 @media(max-width:760px){nav{gap:0;padding:14px 0}nav a{padding:6px 9px;font-size:14px}}
+
+/* ================= v6: neon ring, extra palette, glow chips ================= */
+:root{--cy:#22d3ee;--vi:#a78bfa;--mi:#34d399;--am:#fbbf24;--ro:#fb7185;--bl:#60a5fa}
+
+/* neon ring behind the portrait (replaces the glossy orbs) */
+.orb{display:none}
+.neon{position:absolute;left:50%;top:-5%;width:94%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;z-index:0;
+  border:6px solid #f2fdff;
+  background:radial-gradient(circle,rgba(34,211,238,.16),transparent 70%);
+  box-shadow:0 0 5px #fff,0 0 14px #7df3ff,0 0 36px #22d3ee,0 0 84px rgba(34,211,238,.7),0 0 140px rgba(139,92,246,.32),
+             inset 0 0 14px #7df3ff,inset 0 0 44px rgba(34,211,238,.5)}
+.neon::after{content:"";position:absolute;inset:-30px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,transparent 60%,rgba(34,211,238,.4) 65%,transparent 78%);animation:neonpulse 3.2s ease-in-out infinite}
+@keyframes neonpulse{0%,100%{opacity:1}50%{opacity:.3}}
+.ring{width:78%;top:0}
+.ring::before{opacity:.45}
+
+/* results: one big stat */
+.bigstat{display:inline-flex;flex-direction:column;gap:8px;padding:28px 44px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(34,211,238,.14),rgba(139,92,246,.16));border:1px solid var(--line);box-shadow:0 0 44px rgba(34,211,238,.16)}
+.bigstat b{font:700 clamp(54px,9vw,92px)/1 Sora,sans-serif;background:linear-gradient(90deg,#67e8f9,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bigstat>span{color:var(--mute);font-size:17px}
+
+/* services: coloured accent per card */
+#services .card{border-top:3px solid var(--c,var(--tint))}
+#services .card h3::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:10px;vertical-align:middle;
+  background:var(--c);box-shadow:0 0 10px var(--c)}
+#services .card:hover{border-color:var(--c);box-shadow:0 12px 30px rgba(0,10,30,.35),0 0 26px color-mix(in srgb,var(--c) 40%,transparent)}
+
+/* skills: readable chips that glow in their own colour on hover */
+.tags span{--c:var(--tint);cursor:default;background:rgba(1,44,77,.82);
+  transition:transform .2s,box-shadow .25s,border-color .25s,color .25s,background .25s}
+#skills .tags span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:8px;background:var(--c);box-shadow:0 0 8px var(--c)}
+#skills .tags span:hover{color:#fff;border-color:var(--c);transform:translateY(-3px) scale(1.06);
+  background:color-mix(in srgb,var(--c) 24%,rgba(1,44,77,.9));
+  box-shadow:0 0 12px var(--c),0 0 32px color-mix(in srgb,var(--c) 55%,transparent)}
+#skills .card,#skills .tags span{backdrop-filter:none}
+
+/* experience timeline: colourful dots */
+.job:nth-child(6n+1)::before{background:var(--cy);box-shadow:0 0 14px var(--cy)}
+.job:nth-child(6n+2)::before{background:var(--vi);box-shadow:0 0 14px var(--vi)}
+.job:nth-child(6n+3)::before{background:var(--mi);box-shadow:0 0 14px var(--mi)}
+.job:nth-child(6n+4)::before{background:var(--am);box-shadow:0 0 14px var(--am)}
+.job:nth-child(6n+5)::before{background:var(--ro);box-shadow:0 0 14px var(--ro)}
+.job:nth-child(6n)::before{background:var(--bl);box-shadow:0 0 14px var(--bl)}
+@media(prefers-reduced-motion:reduce){.neon::after{animation:none}}
+/* draw the neon ring once on its own layer instead of repainting the glow every frame */
+.neon{will-change:transform;contain:layout paint style}
+.neon::after{will-change:opacity}
+.ring{will-change:transform}
+
+/* neon ring is now a pre-rendered image (same look, far cheaper to draw than live blur shadows) */
+.neon{left:50%;top:-20.3%;width:142%;aspect-ratio:1;transform:translateX(-50%);border:0;border-radius:0;background:url('/neon-ring.webp') center/contain no-repeat;
+  box-shadow:none;contain:none;will-change:opacity;animation:neonpulse 3.2s ease-in-out infinite}
+.neon::after{display:none}
+@keyframes neonpulse{0%,100%{opacity:1}50%{opacity:.72}}

@@ -2,8 +2,9 @@ import NetworkBackground from '../components/NetworkBackground';
 import Photo from '../components/Photo';
 import HeroWaves from '../components/HeroWaves';
 import GlowEffects from '../components/GlowEffects';
+import CountUp from '../components/CountUp';
 import { WaIcon, MailIcon, InIcon, GhIcon, YtIcon, DocIcon } from '../components/Icons';
-import { stats, jobs, services, creative, skills, languages, education } from './data';
+import { jobs, services, creative, skills, languages, education } from './data';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH || '';
 const WA = 'https://wa.me/8801875601397?text=' + encodeURIComponent('Hi Shohagh, I found your portfolio and would like to talk.');
@@ -30,33 +31,27 @@ export default function Home() {
           <div>
             <h1>I close international deals and <em>automate</em> the work behind them.</h1>
             <p>
-              I&rsquo;m Md. Shahedur Rahman (Shohagh), a Sales Executive at Softvence Agency in Dhaka. I manage
-              international client relationships on Fiverr, from the first inquiry and requirement scoping
-              through proposal and closed order. I also build n8n automation workflows and produce video content.
+              I&rsquo;m Md. Shahedur Rahman (Shohagh), an international sales professional. My core skills are client
+              communication, requirement scoping, proposal writing and deal closing, supported by n8n automation and
+              video content production.
             </p>
             <div className="btns">
               <a className="btn p big" href="#contact">Work with me</a>
             </div>
           </div>
           <div className="photo-wrap">
+            <div className="neon" aria-hidden="true" />
             <div className="ring" aria-hidden="true" />
-            <span className="orb o1" aria-hidden="true" />
-            <span className="orb o3" aria-hidden="true" />
             <Photo src={`${base}/hero-portrait.webp`} alt="Portrait of Md. Shahedur Rahman" />
-            <span className="orb o2" aria-hidden="true" />
           </div>
         </div>
       </header>
 
       <main>
         <section id="results"><div className="wrap">
-          <h2>Results so far</h2>
-          <p className="sub">Numbers from my Fiverr sales dashboard, April to September 2026.</p>
-          <div className="stats">
-            {stats.map((s) => (
-              <div className="stat" key={s.l}><b>{s.v}</b><span>{s.l}</span></div>
-            ))}
-          </div>
+          <h2>Results</h2>
+          <p className="sub">Total value of the client projects I have handled.</p>
+          <div className="bigstat"><b><CountUp to={30} /></b><span>USD in project value handled</span></div>
         </div></section>
 
         <section id="experience"><div className="wrap">
@@ -76,7 +71,7 @@ export default function Home() {
           <p className="sub">The projects I sell and manage cover web, mobile and automation.</p>
           <div className="grid">
             {services.map((s) => (
-              <div className="card" key={s.t}>
+              <div className="card" key={s.t} style={{ '--c': s.c }}>
                 <h3>{s.t}</h3>
                 {s.d && <p>{s.d}</p>}
                 {s.list && <ul>{s.list.map((i) => <li key={i}>{i}</li>)}</ul>}
@@ -101,7 +96,7 @@ export default function Home() {
         <section id="skills"><div className="wrap">
           <h2>Skills</h2>
           <p className="sub">Tools and strengths I use every day.</p>
-          <div className="tags">{skills.map((s) => <span key={s}>{s}</span>)}</div>
+          <div className="tags">{skills.map(([label, c]) => <span key={label} style={{ '--c': c }}>{label}</span>)}</div>
           <h3 style={{ margin: '36px 0 12px', fontSize: 18 }}>Certification</h3>
           <div className="card">
             <h3>OPSWAT Cybersecurity Fundamentals Associate (OCFA)</h3>
@@ -129,7 +124,7 @@ export default function Home() {
           <a className="btn brand b-wa" href={WA} target="_blank" rel="noopener noreferrer"><WaIcon />WhatsApp</a>
           <a className="btn brand b-mail" href="mailto:Shahedur6@gmail.com"><MailIcon />Email me</a>
           <a className="btn brand b-in" href="https://www.linkedin.com/in/md-shahedur-rahman98/" target="_blank" rel="noopener noreferrer"><InIcon />LinkedIn</a>
-          <a className="btn brand b-gh" href="https://github.com/Shahedur-Rahman-Shohagh" target="_blank" rel="noopener noreferrer"><GhIcon />GitHub</a>
+          <a className="btn brand b-gh" href="https://github.com/srshohagh" target="_blank" rel="noopener noreferrer"><GhIcon />GitHub</a>
           <a className="btn brand b-yt" href="https://www.youtube.com/@shahedurrahman4909" target="_blank" rel="noopener noreferrer"><YtIcon />YouTube</a>
           <a className="btn brand b-cv" href={`${base}/resume.pdf`}><DocIcon />Resume (PDF)</a>
           <p className="phone">WhatsApp and phone: <a href="tel:+8801875601397">+880 1875 601397</a> · Email: <a href="mailto:Shahedur6@gmail.com">Shahedur6@gmail.com</a></p>
