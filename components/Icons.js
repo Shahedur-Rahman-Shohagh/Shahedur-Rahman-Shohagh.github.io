@@ -9,3 +9,26 @@ export const YtIcon = () => <S d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19
 export const DocIcon = () => (
   <S><path d="M6 2.5h8l5 5V21.5H6z M14 2.5v5h5 M9 13h7 M9 17h7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" /></S>
 );
+
+const P = {
+  arrow: 'M5 12h14M13 6l6 6-6 6',
+  bars: 'M5 20V10M12 20V4M19 20v-7',
+  briefcase: 'M4 8h16v11H4z M9 8V5h6v3 M4 13h16',
+  grid: 'M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z',
+  play: 'M8 5l11 7-11 7z',
+  bolt: 'M13 3L5 14h6l-1 7 8-11h-6z',
+  cap: 'M2 9l10-5 10 5-10 5z M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5',
+  mail: 'M4 6h16v12H4z M4 7l8 6 8-6',
+  chat: 'M4 5h16v11H9l-5 4z',
+  doc: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 16h6',
+  check: 'M12 3a9 9 0 100 18 9 9 0 000-18z M8 12l3 3 5-6',
+  flow: 'M4 5h6v5H4z M14 14h6v5h-6z M10 7.5h2a3 3 0 013 3V14',
+  window: 'M3 5h18v14H3z M3 9h18 M6.5 7h.01 M9.5 7h.01',
+  phone: 'M8 3h8a1 1 0 011 1v16a1 1 0 01-1 1H8a1 1 0 01-1-1V4a1 1 0 011-1z M11 18h2',
+  globe: 'M12 3a9 9 0 100 18 9 9 0 000-18z M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18',
+};
+export const Ico = ({ n }) => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d={P[n]} />
+  </svg>
+);

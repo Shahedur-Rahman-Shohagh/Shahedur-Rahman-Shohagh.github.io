@@ -6,10 +6,10 @@ const SPEED = 1.6; // 1 = calm, 2 = fast
 
 // Each ribbon is a bundle of thin lines; phase shifts make it twist like a swirl.
 const RIBBONS = [
-  { y: 0.6,  amp: 0.12, k: 1.5, speed: 0.45,  twist: 1.6, spread: 0.2,  lines: 16, rgb: '169,214,229', a: 0.8 },
-  { y: 0.52, amp: 0.1,  k: 2.2, speed: -0.35, twist: 2.1, spread: 0.16, lines: 14, rgb: '137,194,217', a: 0.7 },
-  { y: 0.68, amp: 0.09, k: 2.9, speed: 0.6,   twist: 1.2, spread: 0.14, lines: 12, rgb: '97,165,194',  a: 0.75 },
-  { y: 0.58, amp: 0.15, k: 1.1, speed: -0.25, twist: 2.6, spread: 0.24, lines: 12, rgb: '42,111,151',  a: 0.9 },
+  { y: 0.6,  amp: 0.12, k: 1.5, speed: 0.45,  twist: 1.6, spread: 0.2,  lines: 16, rgb: '167,235,242', a: 0.8 },
+  { y: 0.52, amp: 0.1,  k: 2.2, speed: -0.35, twist: 2.1, spread: 0.16, lines: 14, rgb: '84,172,191', a: 0.7 },
+  { y: 0.68, amp: 0.09, k: 2.9, speed: 0.6,   twist: 1.2, spread: 0.14, lines: 12, rgb: '38,101,140',  a: 0.75 },
+  { y: 0.58, amp: 0.15, k: 1.1, speed: -0.25, twist: 2.6, spread: 0.24, lines: 12, rgb: '84,172,191',  a: 0.9 },
 ];
 
 export default function HeroWaves() {
