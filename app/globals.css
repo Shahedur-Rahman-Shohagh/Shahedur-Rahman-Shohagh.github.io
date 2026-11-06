@@ -14,12 +14,12 @@
   --body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 *{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth;background:var(--black)}
+html{scroll-behavior:smooth;background:var(--c5)}
 body{background:transparent;color:var(--text);font:400 16px/1.65 var(--body);min-height:100vh;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0;z-index:-1;
-  background:radial-gradient(900px 600px at 82% -5%,rgba(2,56,89,.45),transparent 62%),
-             radial-gradient(800px 560px at -5% 45%,rgba(1,28,64,.85),transparent 62%),
-             linear-gradient(180deg,#000000,#011C40)}
+  background:radial-gradient(900px 600px at 82% -5%,rgba(38,101,140,.55),transparent 62%),
+             radial-gradient(800px 560px at -5% 45%,rgba(2,56,89,.85),transparent 62%),
+             linear-gradient(180deg,#011C40,#011C40)}
 a{color:var(--c1)}
 :focus-visible{outline:2px solid var(--c1);outline-offset:3px}
 h1,h2,h3{font-family:var(--display);line-height:1.1}
